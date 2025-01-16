@@ -1,7 +1,7 @@
 FROM golang:latest AS builder
 # 将文件复制和工作目录设置合并到一个 WORKDIR 中，WORKDIR 会自动创建目录
 WORKDIR /app
-COPY. /app
+COPY . /app
 # 合并多个 Go 环境设置和构建命令
 RUN go env -w GO111MODULE=on && \
     # go env -w GOPROXY=https://goproxy.cn,direct && \
