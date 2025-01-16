@@ -1,21 +1,20 @@
 FROM golang:latest AS builder
-COPY . /app
-RUN go env -w GO111MODULE=on
-# RUN go env -w GOPROXY=https://goproxy.cn,direct
+# 将文件复制和工作目录设置合并到一个 WORKDIR 中，WORKDIR 会自动创建目录
 WORKDIR /app
-RUN go vet && go mod tidy && go mod vendor && go build -o gin main.go
-
-RUN apk add build-essential ffmpeg
+COPY. /app
+# 合并多个 Go 环境设置和构建命令
+RUN go env -w GO111MODULE=on && \
+    # go env -w GOPROXY=https://goproxy.cn,direct && \
+    go vet && go mod tidy && go mod vendor && go build -o gin main.go
 
 FROM python:3.9.21-bookworm
+# 合并多个 Python 包管理和系统包管理命令
+RUN apt update && apt full-upgrade -y && \
+    apt install -y build-essential ffmpeg && \
+    pip install --upgrade pip && \
+    pip install openai-whisper --break-system-packages
+# 复制文件
+COPY --from=builder /app/gin /usr/bin/gin
 # RUN pip config set global.index-url https://mirrors4.tuna.tsinghua.edu.cn/pypi/web/simple
-pip install --upgrade pip
-RUN pip install openai-whisper --break-system-packages
 
-
-ENTRYPOINT ["/app/gin"]
-
-
-# docker run  -dit --name whisper -v C:\Users\zen\Github\whisper-web\videos:/videos -p 8192:9001 python:3.9.21-bookworm bash
-# docker run  --name ytdlp -v C:\Users\zen\Githea\ytdlp-web\videos:/videos -p 8192:9001 --rm ytdlp:latest
-# docker build --debug -t ytdlp:latest .
+ENTRYPOINT ["/usr/bin/gin"]

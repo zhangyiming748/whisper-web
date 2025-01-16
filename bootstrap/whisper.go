@@ -11,6 +11,6 @@ func InitYtdlp(engine *gin.Engine) {
 	{
 		c := new(controller.WhisperController)
 		//routeGroup.GET("/v1/s1/gethello", c.GetHello)
-		routeGroup.POST("/v1/whisper/download", c.DownloadAll)
+		routeGroup.POST("/v1/whisper", c.DownloadAll)
 	}
 }

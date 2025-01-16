@@ -2,6 +2,7 @@ package controller
 
 import (
 	"log"
+	"whisper/logic"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,9 +45,10 @@ func (y WhisperController) DownloadAll(ctx *gin.Context) {
 		Language: req.Language,
 		Pattern:  req.Pattern,
 		Model:    req.Model,
-		Msg:      "已经开始转换",
+		Msg:      "已经开始生字幕",
 	}
 	log.Println("开始转换")
+	go logic.Start(req.Language, req.Pattern, req.Model)
 	//go logic.DownloadVideos(req.URLs, req.Proxy)
 	ctx.JSON(200, rep)
 }
