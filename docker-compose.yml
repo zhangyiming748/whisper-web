@@ -5,5 +5,5 @@ services:
         volumes:
             - /path/to/your/videos:/videos
         ports:
-            - 9003:9003
+            - 9003:2147
         image: zhangyiming748/whisper
