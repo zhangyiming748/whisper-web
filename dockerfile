@@ -11,8 +11,9 @@ FROM python:3.9.21-bookworm
 # 合并多个 Python 包管理和系统包管理命令
 RUN apt update && apt full-upgrade -y && \
     apt install -y build-essential ffmpeg && \
-    pip install --upgrade pip && \
-    pip install openai-whisper --break-system-packages
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir openai-whisper --break-system-packages && \
+    apt clean && rm -rf /var/lib/apt/lists/*
 # 复制文件
 COPY --from=builder /app/gin /usr/bin/gin
 # RUN pip config set global.index-url https://mirrors4.tuna.tsinghua.edu.cn/pypi/web/simple
